@@ -16,7 +16,6 @@ import static java.util.stream.Collectors.toList;
 @Getter
 @Setter(value = AccessLevel.PRIVATE)
 public class Pattern extends AbstractCombination {
-    public static final Long NUMBER_OF_STOPS = 4L;
     private long blockedStopsCount;
     private List<Area> allStops;
 
@@ -30,11 +29,9 @@ public class Pattern extends AbstractCombination {
             throw new IllegalArgumentException(String.format("Invalid pattern representation: %s", line));
         }
 
-        var from = Optional.ofNullable(AbstractCombination.parseArea(parts[0]))
-                .filter(area -> !X.equals(area))
+        var from = Area.toDefinedArea(parts[0])
                 .orElseThrow(() -> new IllegalArgumentException(String.format("From has to be set, pattern: %s", line)));
-        var to = Optional.ofNullable(AbstractCombination.parseArea(parts[5]))
-                .filter(area -> !X.equals(area))
+        var to = Area.toDefinedArea(parts[5])
                 .orElseThrow(() -> new IllegalArgumentException(String.format("To has to be set, pattern: %s", line)));
         var pattern = new Pattern();
         pattern.setFrom(from);
@@ -42,7 +39,7 @@ public class Pattern extends AbstractCombination {
 
         var allStops = new ArrayList<Area>();
         for (int i = 1; i <= 4; i++) {
-            allStops.add(AbstractCombination.parseArea(parts[i]));
+            allStops.add(Area.toArea(parts[i]).orElse(null));
         }
 
         for (int i = 1; i < allStops.size(); i++) {

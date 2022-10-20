@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PatternTest {
 
     @Test
-    public void testNormalize() {
+    public void testOf() {
         assertThrows(IllegalArgumentException.class, () -> Pattern.of("A1"), "Invalid pattern representation: A1");
         assertThrows(IllegalArgumentException.class, () -> Pattern.of("-----A1"), "From has to be set, pattern: -----A1");
         assertThrows(IllegalArgumentException.class, () -> Pattern.of("X-----A1"), "From has to be set, pattern: X-----A1");

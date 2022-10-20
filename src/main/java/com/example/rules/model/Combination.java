@@ -25,17 +25,21 @@ public class Combination extends AbstractCombination implements Cloneable, Compa
 
     public static Combination of(String line) {
         var parts = line.split("-");
-        if (parts.length < 2) {
+        if (parts.length < 2 || parts.length > 6) {
             throw new IllegalArgumentException(String.format("Invalid combination representation: %s", line));
         }
+        var areas = Arrays.stream(parts)
+                .map(part -> Area.toDefinedArea(part)
+                        .orElseThrow(() -> new IllegalArgumentException("Empty or X area is not allowed in combination: %s")))
+                .collect(toList());
+
         var combination = new Combination();
-        combination.setFrom(AbstractCombination.parseArea(parts[0]));
-        combination.setTo(AbstractCombination.parseArea(parts[parts.length - 1]));
+        combination.setFrom(areas.get(0));
+        combination.setTo(areas.get(areas.size() - 1));
         combination.setStops(new ArrayList<>());
 
         if (parts.length > 2) {
-            var partsStops = Arrays.copyOfRange(parts, 1, parts.length - 1);
-            combination.getStops().addAll(Arrays.stream(partsStops).map(AbstractCombination::parseArea).collect(toList()));
+            combination.getStops().addAll(areas.subList(1, areas.size() - 1));
         }
         return combination;
     }
@@ -55,9 +59,6 @@ public class Combination extends AbstractCombination implements Cloneable, Compa
 
         var result = getFrom().getMultiplier() * 10000000 + getTo().getMultiplier() * 1000000;
         for (int i = 0; i < getStops().size(); i++) {
-            if (getStops().get(i) == null) {
-                System.out.println("ooops");
-            }
             result += getStops().get(i).getMultiplier() * indexes.get(i);
         }
         return result;
