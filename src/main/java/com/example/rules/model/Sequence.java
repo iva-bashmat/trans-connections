@@ -41,20 +41,11 @@ public class Sequence {
             throw new IllegalArgumentException(String.format("From has to be set, sequence: %s", line));
         }
 
-        for (int i = 1; i < areas.size(); i++) {
-            var prev = areas.get(i - 1);
-            var current = areas.get(i);
-
-            if (current.equals(prev) && !X.equals(current)) {
-                throw new IllegalArgumentException(String.format("Next stop cannot be same as previous, sequence: %s", line));
-            }
-        }
-
         if (areas.size() > 2) {
             var intraAreas = areas.subList(1, areas.size() - 1);
             for (int i = 1; i < intraAreas.size(); i++) {
                 var prev = intraAreas.get(i - 1);
-                var current = intraAreas.get(1);
+                var current = intraAreas.get(i);
 
                 if (X.equals(prev) && !X.equals(current)) {
                     throw new IllegalArgumentException(String.format("Stop cannot be set if previous is blocked, sequence: %s", line));

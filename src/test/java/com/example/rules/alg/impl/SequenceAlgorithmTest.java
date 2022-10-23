@@ -17,7 +17,6 @@ public class SequenceAlgorithmTest {
         sequence = Sequence.of("A1-X-X-A2");
         combinations = new SequenceAlgorithm().buildCombinations(sequence);
         assertEquals(6, combinations.size());
-
         assertEquals(Combination.of("A1-A2"), combinations.first());
         assertEquals(Combination.of("A1-A1-A2"), combinations.higher(combinations.first()));
 

@@ -45,7 +45,7 @@ public class SequenceAlgorithm extends ExpansionAlgorithm<Sequence> {
         combinationTemplates.put(5, sequence5Templates());
         combinationTemplates.put(6, sequence6Templates());
     }
-    
+
     private List<List<Integer>> sequence2Templates() {
         var templates = new ArrayList<List<Integer>>();
         templates.add(List.of(1, 1));
@@ -107,7 +107,7 @@ public class SequenceAlgorithm extends ExpansionAlgorithm<Sequence> {
         templates.add(List.of(1, 2, 1, 2));
         templates.add(List.of(1, 1, 3, 1));
         templates.add(List.of(1, 1, 2, 2));
-        templates.add(List.of(1, 1, 1, 2));
+        templates.add(List.of(1, 1, 1, 3));
         return templates;
     }
 
