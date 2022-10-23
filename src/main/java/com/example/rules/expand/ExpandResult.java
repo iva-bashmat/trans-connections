@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 @Data
 @Builder
-public class ExpandResult {
-    private List<PatternExpanded> patterns;
+public class ExpandResult<T> {
+    private List<PatternExpanded<T>> patterns;
     private TreeSet<Combination> remainingCombinations;
 }

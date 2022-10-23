@@ -3,7 +3,6 @@ package com.example.rules.expand;
 import com.example.rules.alg.ExpansionAlgorithm;
 import com.example.rules.expand.model.PatternExpanded;
 import com.example.rules.model.Combination;
-import com.example.rules.model.Pattern;
 import com.example.rules.util.FileUtils;
 
 import java.io.IOException;
@@ -12,25 +11,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.example.rules.expand.model.CombinationState.*;
 
-public class CombinationBuilder {
-    private ExpansionAlgorithm alg;
-    private Set<Combination> combinationsDisabled;
-    private List<Pattern> patterns;
+public class CombinationBuilder<T> {
+    private final ExpansionAlgorithm<T> alg;
+    private final Set<Combination> combinationsDisabled;
+    private final List<T> patterns;
 
-    public CombinationBuilder(ExpansionAlgorithm alg, String patternsFile, String combinationsDisabledFile) throws URISyntaxException, IOException {
+    public CombinationBuilder(ExpansionAlgorithm<T> alg, String patternsFile, Function<String, T> mapper, String combinationsDisabledFile) throws URISyntaxException, IOException {
         this.alg = alg;
         this.combinationsDisabled = FileUtils.readClasspathFile(combinationsDisabledFile, Combination::of, Collectors.toSet());
-        this.patterns = FileUtils.readClasspathFile(patternsFile, Pattern::of, Collectors.toList());
+        this.patterns = FileUtils.readClasspathFile(patternsFile, mapper, Collectors.toList());
     }
 
-    public ExpandResult expand(Set<Combination> combinationsExpected) {
+    public ExpandResult<T> expand(Set<Combination> combinationsExpected) {
         var combinationsActual = new HashSet<Combination>();
         var patternsExpanded = patterns.stream().map(pattern -> {
-            var patternExpanded = new PatternExpanded(pattern);
+            var patternExpanded = new PatternExpanded<>(pattern);
             var combinations = alg.buildCombinations(pattern);
             for (var combination : combinations) {
                 if (combinationsExpected.contains(combination)) {
@@ -49,7 +49,7 @@ public class CombinationBuilder {
         var combinationsRemaining = new TreeSet<>(combinationsExpected);
         combinationsRemaining.removeAll(combinationsActual);
 
-        return ExpandResult.builder().patterns(patternsExpanded).remainingCombinations(combinationsRemaining).build();
+        return new ExpandResult<>(patternsExpanded, combinationsRemaining);
 
     }
 }

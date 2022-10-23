@@ -19,28 +19,27 @@ public class SequenceTest {
         assertThrows(IllegalArgumentException.class, () -> Sequence.of("A1-A2-A2-A1"), "Next stop cannot be same as previous, sequence: A1-A2-A2-A1");
 
         var sequence = Sequence.of("A1");
-        assertEquals(A1, sequence.getFrom());
-        assertEquals(A1, sequence.getTo());
-        assertEquals(0, sequence.getStops().size());
+        assertEquals(1, sequence.getStops().size());
+        assertEquals(A1, sequence.getStops().get(0));
         assertEquals(0, sequence.getBlockedStopsCount());
 
         sequence = Sequence.of("A1-A2");
-        assertEquals(A1, sequence.getFrom());
-        assertEquals(A2, sequence.getTo());
-        assertEquals(0, sequence.getStops().size());
+        assertEquals(2, sequence.getStops().size());
+        assertEquals(A1, sequence.getStops().get(0));
+        assertEquals(A2, sequence.getStops().get(1));
         assertEquals(0, sequence.getBlockedStopsCount());
 
         sequence = Sequence.of("A1-X-X-A2");
-        assertEquals(A1, sequence.getFrom());
-        assertEquals(A2, sequence.getTo());
-        assertEquals(0, sequence.getStops().size());
+        assertEquals(2, sequence.getStops().size());
+        assertEquals(A1, sequence.getStops().get(0));
+        assertEquals(A2, sequence.getStops().get(1));
         assertEquals(2, sequence.getBlockedStopsCount());
 
         sequence = Sequence.of("A1-A3-X-A2");
-        assertEquals(A1, sequence.getFrom());
-        assertEquals(A2, sequence.getTo());
-        assertEquals(1, sequence.getStops().size());
-        assertEquals(A3, sequence.getStops().get(0));
+        assertEquals(3, sequence.getStops().size());
+        assertEquals(A1, sequence.getStops().get(0));
+        assertEquals(A3, sequence.getStops().get(1));
+        assertEquals(A2, sequence.getStops().get(2));
         assertEquals(1, sequence.getBlockedStopsCount());
     }
 }

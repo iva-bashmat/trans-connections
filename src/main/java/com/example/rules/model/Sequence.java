@@ -4,15 +4,18 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.rules.model.Area.X;
 import static java.util.stream.Collectors.toList;
 
 @Getter
 @Setter(value = AccessLevel.PRIVATE)
-public class Sequence extends AbstractCombination {
+public class Sequence {
+    private List<Area> allStops;
+    private List<Area> stops;
     private long blockedStopsCount;
 
     private Sequence() {
@@ -24,25 +27,18 @@ public class Sequence extends AbstractCombination {
         if (parts.length == 0 || parts.length > 6) {
             throw new IllegalArgumentException(String.format("Invalid sequence representation: %s", line));
         }
+
         var areas = Arrays.stream(parts)
                 .map(part -> Area.toArea(part)
                         .orElseThrow(() -> new IllegalArgumentException("Empty area is not allowed in sequence: %s")))
                 .collect(toList());
 
-        var sequence = new Sequence();
-        sequence.setFrom(areas.get(0));
-        if (X.equals(sequence.getFrom())) {
+        if (X.equals(areas.get(0))) {
             throw new IllegalArgumentException(String.format("From has to be set, sequence: %s", line));
         }
 
-        if (parts.length == 1) {
-            sequence.setTo(sequence.getFrom());
-        } else {
-            var to = areas.get(areas.size() - 1);
-            if (X.equals(to)) {
-                throw new IllegalArgumentException(String.format("To has to be set, sequence: %s", line));
-            }
-            sequence.setTo(to);
+        if (X.equals(areas.get(areas.size() - 1))) {
+            throw new IllegalArgumentException(String.format("From has to be set, sequence: %s", line));
         }
 
         for (int i = 1; i < areas.size(); i++) {
@@ -54,8 +50,6 @@ public class Sequence extends AbstractCombination {
             }
         }
 
-        sequence.setStops(new ArrayList<>());
-        sequence.setBlockedStopsCount(0);
         if (areas.size() > 2) {
             var intraAreas = areas.subList(1, areas.size() - 1);
             for (int i = 1; i < intraAreas.size(); i++) {
@@ -66,12 +60,17 @@ public class Sequence extends AbstractCombination {
                     throw new IllegalArgumentException(String.format("Stop cannot be set if previous is blocked, sequence: %s", line));
                 }
             }
-
-            sequence.setBlockedStopsCount(intraAreas.stream().filter(X::equals).count());
-            sequence.getStops().addAll(intraAreas.stream().filter(area -> !X.equals(area)).collect(toList()));
         }
-
+        var sequence = new Sequence();
+        sequence.setAllStops(areas);
+        sequence.setBlockedStopsCount(areas.stream().filter(X::equals).count());
+        sequence.setStops(areas.stream().filter(area -> !X.equals(area)).collect(toList()));
         return sequence;
+    }
+
+    @Override
+    public String toString() {
+        return allStops.stream().map(Area::name).collect(Collectors.joining("-"));
     }
 
 }

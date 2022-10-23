@@ -23,6 +23,18 @@ public class Combination extends AbstractCombination implements Cloneable, Compa
         super(from, to, stops);
     }
 
+    public Combination(List<Area> areas) {
+        if (areas.size() < 2 || areas.size() > 6) {
+            throw new IllegalArgumentException("Invalid combination representation");
+        }
+        this.setFrom(areas.get(0));
+        this.setTo(areas.get(areas.size() - 1));
+        this.setStops(new ArrayList<>());
+        if (areas.size() > 2) {
+            this.getStops().addAll(areas.subList(1, areas.size() - 1));
+        }
+    }
+
     public static Combination of(String line) {
         var parts = line.split("-");
         if (parts.length < 2 || parts.length > 6) {
@@ -38,7 +50,7 @@ public class Combination extends AbstractCombination implements Cloneable, Compa
         combination.setTo(areas.get(areas.size() - 1));
         combination.setStops(new ArrayList<>());
 
-        if (parts.length > 2) {
+        if (areas.size() > 2) {
             combination.getStops().addAll(areas.subList(1, areas.size() - 1));
         }
         return combination;

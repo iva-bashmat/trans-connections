@@ -1,13 +1,12 @@
 package com.example.rules.alg.impl;
 
-import com.example.rules.alg.ExpansionAlgorithm;
 import com.example.rules.model.Area;
 import com.example.rules.model.Combination;
 
 import java.util.HashSet;
 import java.util.stream.Stream;
 
-public class PatternAny extends ExpansionAlgorithm {
+public class PatternAny extends PatternAlgorithm {
 
     @Override
     protected Stream<Combination> populateNextStop(Combination combination) {

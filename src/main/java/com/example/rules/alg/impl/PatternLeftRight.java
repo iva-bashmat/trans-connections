@@ -1,11 +1,10 @@
 package com.example.rules.alg.impl;
 
-import com.example.rules.alg.ExpansionAlgorithm;
 import com.example.rules.model.Combination;
 
 import java.util.stream.Stream;
 
-public class PatternLeftRight extends ExpansionAlgorithm {
+public class PatternLeftRight extends PatternAlgorithm {
 
     @Override
     protected Stream<Combination> populateNextStop(Combination combination) {
