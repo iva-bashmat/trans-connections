@@ -27,6 +27,12 @@ public class CombinationBuilder<T> {
         this.patterns = FileUtils.readClasspathFile(patternsFile, mapper, Collectors.toList());
     }
 
+    public CombinationBuilder(ExpansionAlgorithm<T> alg, List<T> patterns, Set<Combination> combinationsDisabled) {
+        this.alg = alg;
+        this.patterns = patterns;
+        this.combinationsDisabled = combinationsDisabled;
+    }
+
     public ExpandResult<T> expand(Set<Combination> combinationsExpected) {
         var combinationsActual = new HashSet<Combination>();
         var patternsExpanded = patterns.stream().map(pattern -> {
@@ -50,6 +56,5 @@ public class CombinationBuilder<T> {
         combinationsRemaining.removeAll(combinationsActual);
 
         return new ExpandResult<>(patternsExpanded, combinationsRemaining);
-
     }
 }

@@ -3,10 +3,7 @@ package com.example.rules.model;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -24,15 +21,7 @@ public class Combination extends AbstractCombination implements Cloneable, Compa
     }
 
     public Combination(List<Area> areas) {
-        if (areas.size() < 2 || areas.size() > 6) {
-            throw new IllegalArgumentException("Invalid combination representation");
-        }
-        this.setFrom(areas.get(0));
-        this.setTo(areas.get(areas.size() - 1));
-        this.setStops(new ArrayList<>());
-        if (areas.size() > 2) {
-            this.getStops().addAll(areas.subList(1, areas.size() - 1));
-        }
+        super(areas);
     }
 
     public static Combination of(String line) {
@@ -54,6 +43,15 @@ public class Combination extends AbstractCombination implements Cloneable, Compa
             combination.getStops().addAll(areas.subList(1, areas.size() - 1));
         }
         return combination;
+    }
+
+    public List<Area> toListAreas() {
+        var areas = new ArrayList<Area>();
+        areas.add(getFrom());
+        areas.addAll(getStops());
+        areas.addAll(Collections.nCopies(AbstractCombination.NUMBER_OF_INTERMEDIATE_STOPS.intValue() - getStops().size(), null));
+        areas.add(getTo());
+        return areas;
     }
 
     @Override

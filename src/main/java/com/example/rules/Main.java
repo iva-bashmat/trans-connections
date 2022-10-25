@@ -28,6 +28,9 @@ public class Main {
         Main.expand(combinationsExpected, new PatternLeftRight(), "left-right", Pattern::of);
         Main.expand(combinationsExpected, new PatternAny(), "any", Pattern::of);
         Main.expand(combinationsExpected, new SequenceAlgorithm(), "sequence", Sequence::of);
+
+        var patternsLeftRightGenerated = new PatternGenerator().generate(combinationsExpected);
+        Main.writeResults(patternsLeftRightGenerated, Main.RESULT_FOLDER_BASE + "/left-right-autogenerate");
     }
 
     private static <T> void expand(Set<Combination> combinationsExpected, ExpansionAlgorithm<T> alg, String folderName, Function<String, T> patternMapper) throws URISyntaxException, IOException {
@@ -47,7 +50,7 @@ public class Main {
         FileUtils.writeFile(patternsContent.toString(), folder, "patterns.txt");
 
         var contentCombinations = expandResult.getRemainingCombinations().stream().map(Combination::toString).collect(Collectors.joining(System.lineSeparator()));
-        FileUtils.writeFile(contentCombinations, folder, "combinations.txt");
+        FileUtils.writeFile(contentCombinations, folder, "combinations-remaining.txt");
     }
 }
 

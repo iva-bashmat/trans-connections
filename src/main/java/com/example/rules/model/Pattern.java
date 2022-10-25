@@ -1,13 +1,11 @@
 package com.example.rules.model;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.rules.model.Area.X;
 import static java.util.stream.Collectors.joining;
@@ -15,12 +13,21 @@ import static java.util.stream.Collectors.toList;
 
 @Getter
 @Setter(value = AccessLevel.PRIVATE)
+@EqualsAndHashCode(callSuper = true)
 public class Pattern extends AbstractCombination {
     private long blockedStopsCount;
     private List<Area> allStops;
 
     private Pattern() {
 
+    }
+
+    public Pattern(List<Area> areas) {
+        super(areas);
+        this.allStops = new ArrayList<>(Collections.nCopies(4, null));
+        for (int i = 1; i <= areas.size() - 2; i++) {
+            this.allStops.set(i - 1, areas.get(i));
+        }
     }
 
     public static Pattern of(String line) {
@@ -75,5 +82,13 @@ public class Pattern extends AbstractCombination {
 
     private String formatStops() {
         return allStops.stream().map(stop -> Optional.ofNullable(stop).map(Area::name).orElse("[]")).collect(joining("-"));
+    }
+
+    public void setBlockedStops(long blockedStopsCount) {
+        this.blockedStopsCount = blockedStopsCount;
+        for (int i = allStops.size() - 1; i > allStops.size() - 1 - blockedStopsCount; i--) {
+            allStops.set(i, X);
+            setStops(allStops.stream().filter(stop -> !X.equals(stop)).filter(Objects::nonNull).collect(toList()));
+        }
     }
 }
